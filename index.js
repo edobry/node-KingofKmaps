@@ -35,24 +35,26 @@ function start(){
 										io = require('socket.io').listen(8080);
 										require('dns').lookup(require('os').hostname(), function (err, add, fam) {
   											stdout.write('Give the client this address: '+ add + ":8080");
-										})
-										io.sockets.on('connection', function (socket) {
-											stdout.write("Client connected!");
-											remote = socket;
-											remote.on('disconnect', function () {
-												stdout.write("Client disconnected");
-											});
+											io.sockets.on('connection', function (socket) {
+												stdout.write("Client connected!");
+												remote = socket;
+												remote.on('disconnect', function () {
+													stdout.write("Client disconnected");
+												});
 
-											setupGame("human", "remote");
-										});
+												setupGame("human", "remote");
+											});
+										})
 										break;
 									case "c":
 										prompt("Address: ", function (input){
 											stdout.write("Connecting...\n");
 											io = require('socket.io-client');
-											remote = io.connect(input);
-											stdout.write("Connected!\n");
-											setupGame("remote", "human");
+											remote = io.connect(input.toString().trim());
+											if(remote){
+												stdout.write("Connected!\n");
+												setupGame("remote", "human");
+											}
 										});
 										break;
 								}
@@ -95,7 +97,6 @@ function setupGame(p1, p2){
 			nextTurn();
 		});
 		remote.emit("move made", {"x": lastMove.x, "y": lastMove.y});
-		remote.emit("request move");
 	}
 	
 	function machineMove(){
