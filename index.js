@@ -32,7 +32,7 @@ function start(){
 								switch(input){
 									case "h":
 										stdout.write("Waiting for connection...\n");
-										io = require('socket.io').listen(8080);
+										io = require('socket.io').listen(8080, { log: false });
 										require('dns').lookup(require('os').hostname(), function (err, add, fam) {
   											stdout.write('Give the client this address: '+ add + ":8080");
 											io.sockets.on('connection', function (socket) {
