@@ -1,4 +1,5 @@
 var fs = require("fs");
+var 
 var stdin = process.stdin, stdout = process.stdout;
 
 var player1 = {};
@@ -12,13 +13,50 @@ var turn = 0;
 function start(){
 	stdout.write("Welcome to King Of Kmaps!\n\nPlease select a game mode:\n 1) H v H\n 2) H v M\n 3) M v M\n\n");
 	
-	prompt("Mode: ", function(input){
+	prompt("Mode: ", function (input){
 		input = input.toString().trim();
-		if (input == "quit")
-			process.exit();
 		switch(input){
 			case "1": case "1)":
-				setupGame("human","human");
+				var p2 = "";
+				prompt("\n\nLocal (l) or Remote (r)? ", function (input){
+					input = input.toString().trim();
+					switch(input){
+						case "l":
+							setupGame("human", "human";
+							break;
+						case "r":
+							p2 = "remote";
+							prompt("\nAre you the host (h) or the client (c)? ", function (input){
+								input = input.toString().trim();
+								switch(input){
+									case "h":
+										stdout.write("Waiting for connection...\n");
+										io = require('socket.io').listen(8080);
+										io.sockets.on('connection', function () {
+											stdout.write("Client connected!");
+											remote = socket;
+											remote.on('disconnect', function () {
+												stdout.write("Client disconnected");
+											});
+
+											setupGame("human", "remote");
+										});
+										break;
+									case "c":
+										stdout.write("Connecting...\n");
+										io = require('socket.io-client');
+										remote = io.connect("http://localhost:8080");
+										stdout.write("Connected!\n");
+										setupGame("remote", "human");
+										break;
+								}
+							});
+							
+							break;
+						default:
+							process.exit(1);
+					}
+				})
 				break;
 			case "2": case "2)":
 				setupGame("human","machine");
@@ -31,7 +69,7 @@ function start(){
 }
 
 function setupGame(p1, p2){
-	function humanMove(){
+	function humanMove(callback){
 		stdout.write("\n");
 		prompt("x: ", function(input){
 			x = parseInt(input.toString().trim());
@@ -39,8 +77,18 @@ function setupGame(p1, p2){
 				y = parseInt(input.toString().trim());
 				
 				makeMove(x, y);
-				nextTurn();	
+				if(callback) callback(x, y);
+				nextTurn();
 			});
+		});
+	}
+
+	function remoteMove(){
+		stdout.write("Waiting...");
+		remote.emit("request move");
+		remote.once("move made", function (move){
+			makeMove(move.x, move.y);
+			nextTurn();
 		});
 	}
 	
@@ -58,8 +106,10 @@ function setupGame(p1, p2){
 		nextTurn();
 	}
 
-	player1 = {"type": p1, "symbol": 0, "makeMove": (p1 == "human" ? humanMove : machineMove)};
-	player2 = {"type": p2, "symbol": 1, "makeMove": (p2 == "human" ? humanMove : machineMove)};
+	var actions = {"human": humanMove, "machine": machineMove, "remote": remoteMove};
+
+	player1 = {"type": p1, "symbol": 0, "makeMove": actions[p1]};
+	player2 = {"type": p2, "symbol": 1, "makeMove": actions[p2]};
 	
 	stdout.write("\n\nPlayer 1: " + player1.type);
 	stdout.write("\nPlayer 2: " + player2.type + "\n\n");
