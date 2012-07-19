@@ -33,6 +33,9 @@ function start(){
 									case "h":
 										stdout.write("Waiting for connection...\n");
 										io = require('socket.io').listen(8080);
+										require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+  											stdout.write('Give the client this address: '+ add + ":8080");
+										})
 										io.sockets.on('connection', function (socket) {
 											stdout.write("Client connected!");
 											remote = socket;
@@ -44,11 +47,13 @@ function start(){
 										});
 										break;
 									case "c":
-										stdout.write("Connecting...\n");
-										io = require('socket.io-client');
-										remote = io.connect("http://localhost:8080");
-										stdout.write("Connected!\n");
-										setupGame("remote", "human");
+										prompt("Address: ", function (input){
+											stdout.write("Connecting...\n");
+											io = require('socket.io-client');
+											remote = io.connect(input);
+											stdout.write("Connected!\n");
+											setupGame("remote", "human");
+										});
 										break;
 								}
 							});
