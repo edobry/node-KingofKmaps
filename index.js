@@ -15,12 +15,10 @@ function start(){
 	stdout.write("Welcome to King Of Kmaps!\n\nPlease select a game mode:\n 1) H v H\n 2) H v M\n 3) M v M\n\n");
 	
 	prompt("Mode: ", function (input){
-		input = input.toString().trim();
 		switch(input){
 			case "1": case "1)":
 				var p2 = "";
 				prompt("\n\nLocal (l) or Remote (r)? ", function (input){
-					input = input.toString().trim();
 					switch(input){
 						case "l":
 							setupGame("human", "human");
@@ -28,7 +26,6 @@ function start(){
 						case "r":
 							p2 = "remote";
 							prompt("\nAre you the host (h) or the client (c)? ", function (input){
-								input = input.toString().trim();
 								switch(input){
 									case "h":
 										stdout.write("Waiting for connection...\n");
@@ -50,7 +47,7 @@ function start(){
 										prompt("Address: ", function (input){
 											stdout.write("Connecting...\n");
 											io = require('socket.io-client');
-											remote = io.connect(input.toString().trim());
+											remote = io.connect(input);
 											if(remote){
 												stdout.write("Connected!\n");
 												setupGame("remote", "human");
@@ -77,44 +74,42 @@ function start(){
 }
 
 function setupGame(p1, p2){
-	function humanMove(){
-		stdout.write("\n");
-		prompt("x: ", function(input){
-			x = parseInt(input.toString().trim());
-			prompt("y: ", function(input){
-				y = parseInt(input.toString().trim());
-				
-				makeMove(x, y);
+	var actions = {
+		"human": function (){
+			stdout.write("\n");
+			prompt("x: ", function(input){
+				x = parseInt(input);
+				prompt("y: ", function(input){
+					y = parseInt(input);
+					
+					makeMove(x, y);
+					nextTurn();
+				});
+			});
+		},
+		"machine": function (){
+			var playPos = 0;
+			for(i = 0; i < grid.length; i++){
+				if(grid[i] === " "){
+					playPos = i;
+					break;
+				}
+			}
+			x = playPos > 8 ? playPos - (8*(playPos % 8)) : playPos;
+			y = playPos < 8 ? 0 : playPos % 8;
+			makeMove(x, y);
+			nextTurn();
+		},
+		"remote": function (){
+			stdout.write("Waiting...");
+			remote.once("move made", function (move){
+				makeMove(move.x, move.y);
 				nextTurn();
 			});
-		});
-	}
-
-	function remoteMove(){
-		stdout.write("Waiting...");
-		remote.once("move made", function (move){
-			makeMove(move.x, move.y);
-			nextTurn();
-		});
-		remote.emit("move made", {"x": lastMove.x, "y": lastMove.y});
-	}
-	
-	function machineMove(){
-		var playPos = 0;
-		for(i = 0; i < grid.length; i++){
-			if(grid[i] === " "){
-				playPos = i;
-				break;
-			}
+			remote.emit("move made", {"x": lastMove.x, "y": lastMove.y});
 		}
-		x = playPos > 8 ? playPos - (8*(playPos % 8)) : playPos;
-		y = playPos < 8 ? 0 : playPos % 8;
-		makeMove(x, y);
-		nextTurn();
-	}
-
-	var actions = {"human": humanMove, "machine": machineMove, "remote": remoteMove};
-
+	};	
+	
 	player1 = {"type": p1, "symbol": 0, "makeMove": actions[p1]};
 	player2 = {"type": p2, "symbol": 1, "makeMove": actions[p2]};
 	
@@ -130,7 +125,7 @@ function prompt(question, callback){
 	stdin.setEncoding('utf8');
 	stdin.once("data", function(input){
 		stdin.pause();
-		callback(input);
+		callback(input.toString().trim());
 	});
 }
 
