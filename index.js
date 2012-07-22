@@ -10,69 +10,6 @@ var grid = [" "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," ",
 var turn = 0;
 var lastMove = {};
 
-
-function start(){
-	stdout.write("Welcome to King Of Kmaps!\n\nPlease select a game mode:\n 1) H v H\n 2) H v M\n 3) M v M\n\n");
-	
-	prompt("Mode: ", function (input){
-		switch(input){
-			case "1": case "1)":
-				var p2 = "";
-				prompt("\n\nLocal (l) or Remote (r)? ", function (input){
-					switch(input){
-						case "l":
-							setupGame("human", "human");
-							break;
-						case "r":
-							p2 = "remote";
-							prompt("\nAre you the host (h) or the client (c)? ", function (input){
-								switch(input){
-									case "h":
-										stdout.write("Waiting for connection...\n");
-										io = require('socket.io').listen(8080, { log: false });
-										require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-  											stdout.write('Give the client this address: '+ add + ":8080");
-											io.sockets.on('connection', function (socket) {
-												stdout.write("Client connected!");
-												remote = socket;
-												remote.on('disconnect', function () {
-													stdout.write("Client disconnected");
-												});
-
-												setupGame("human", "remote");
-											});
-										})
-										break;
-									case "c":
-										prompt("Address: ", function (input){
-											stdout.write("Connecting...\n");
-											io = require('socket.io-client');
-											remote = io.connect(input);
-											if(remote){
-												stdout.write("Connected!\n");
-												setupGame("remote", "human");
-											}
-										});
-										break;
-								}
-							});
-							
-							break;
-						default:
-							process.exit(1);
-					}
-				})
-				break;
-			case "2": case "2)":
-				setupGame("human","machine");
-				break;
-			case "3": case "3)":
-				setupGame("machine","machine");
-				break;
-		}
-	});
-}
-
 function setupGame(p1, p2){
 	var actions = {
 		"human": function (){
@@ -81,7 +18,6 @@ function setupGame(p1, p2){
 				x = parseInt(input);
 				prompt("y: ", function(input){
 					y = parseInt(input);
-					
 					makeMove(x, y);
 					nextTurn();
 				});
@@ -159,7 +95,7 @@ function randomNum(){
 }
 
 function displayGrid(){
-	var board = fs.readFileSync("board","utf8");
+	var board = fs.readFileSync("C:\\Users\\Eugene\\Documents\\Projects\\KingofKmaps\\board","utf8");
 	var output = "";
 	
 	var pos = 0;
@@ -173,4 +109,65 @@ function displayGrid(){
 	
 	stdout.write("\n\n" + output + "\n\n");
 }
-start();
+
+
+(function (){
+	stdout.write("Welcome to King Of Kmaps!\n\nPlease select a game mode:\n 1) H v H\n 2) H v M\n 3) M v M\n\n");
+	
+	prompt("Mode: ", function (input){
+		switch(input){
+			case "1": case "1)":
+				var p2 = "";
+				prompt("\n\nLocal (l) or Remote (r)? ", function (input){
+					switch(input){
+						case "l":
+							setupGame("human", "human");
+							break;
+						case "r":
+							p2 = "remote";
+							prompt("\nAre you the host (h) or the client (c)? ", function (input){
+								switch(input){
+									case "h":
+										stdout.write("Waiting for connection...\n");
+										io = require('socket.io').listen(8080, { log: false });
+										require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+  											stdout.write('Give the client this address: '+ add + ":8080");
+											io.sockets.on('connection', function (socket) {
+												stdout.write("Client connected!");
+												remote = socket;
+												remote.on('disconnect', function () {
+													stdout.write("Client disconnected");
+												});
+
+												setupGame("human", "remote");
+											});
+										})
+										break;
+									case "c":
+										prompt("Address: ", function (input){
+											stdout.write("Connecting...\n");
+											io = require('socket.io-client');
+											remote = io.connect(input);
+											if(remote){
+												stdout.write("Connected!\n");
+												setupGame("remote", "human");
+											}
+										});
+										break;
+								}
+							});
+							break;
+						default:
+							process.exit(1);
+					}
+				})
+				break;
+			case "2": case "2)":
+				setupGame("human","machine");
+				break;
+			case "3": case "3)":
+				setupGame("machine","machine");
+				break;
+		}
+	});
+})();

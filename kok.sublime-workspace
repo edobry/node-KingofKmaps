@@ -3,23 +3,88 @@
 	{
 		"selected_items":
 		[
+			[
+				"player",
+				"player1"
+			],
+			[
+				"machine",
+				"machineMove"
+			],
+			[
+				"pr",
+				"process.exit(code);"
+			],
+			[
+				"exit",
+				"process.exit(code);"
+			],
+			[
+				"set",
+				"setTimeout();"
+			]
 		]
 	},
 	"buffers":
 	[
+		{
+			"file": "index.js",
+			"settings":
+			{
+				"buffer_size": 4155,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "client.js",
+			"settings":
+			{
+				"buffer_size": 451,
+				"line_ending": "Windows",
+				"name": "var socket = io.connect('http://domain.com');"
+			}
+		},
+		{
+			"file": "server.js",
+			"settings":
+			{
+				"buffer_size": 284,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "board",
+			"settings":
+			{
+				"buffer_size": 324,
+				"line_ending": "Windows"
+			}
+		}
 	],
-	"build_system": "",
+	"build_system": "Packages/Nodejs/Nodejs.sublime-build",
 	"command_palette":
 	{
 		"height": 392.0,
 		"selected_items":
 		[
 			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"node",
+				"Snippet: Snippet: NodeJS EventEmitter"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
 				"pack",
-				"Preferences: Browse Packages"
+				"Package Control: Install Package"
 			]
 		],
-		"width": 416.0
+		"width": 400.0
 	},
 	"console":
 	{
@@ -39,7 +104,7 @@
 	],
 	"find":
 	{
-		"height": 0.0
+		"height": 34.0
 	},
 	"find_in_files":
 	{
@@ -53,6 +118,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"input.toString().trim"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -70,8 +136,115 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "index.js",
+					"settings":
+					{
+						"buffer_size": 4155,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3931,
+								3931
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2099.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "client.js",
+					"settings":
+					{
+						"buffer_size": 451,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								143,
+								0
+							]
+						],
+						"settings":
+						{
+							"auto_name": "var socket = io.connect('http://domain.com');",
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "server.js",
+					"settings":
+					{
+						"buffer_size": 284,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								45,
+								284
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "board",
+					"settings":
+					{
+						"buffer_size": 324,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -81,7 +254,7 @@
 	},
 	"input":
 	{
-		"height": 0.0
+		"height": 31.0
 	},
 	"layout":
 	{
@@ -106,6 +279,14 @@
 		]
 	},
 	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 100.0
+	},
+	"output.git":
+	{
+		"height": 100.0
+	},
 	"replace":
 	{
 		"height": 0.0
@@ -131,6 +312,6 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 150.0,
+	"side_bar_width": 167.0,
 	"status_bar_visible": true
 }
