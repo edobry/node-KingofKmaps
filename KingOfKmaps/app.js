@@ -1,7 +1,8 @@
 var flatiron = require('flatiron'),
     path = require('path'),
     app = flatiron.app,
-    plates = require("plates");
+    plates = require("plates")
+    fs = require('fs');
 
 app.config.file({ file: path.join(__dirname, 'config', 'config.json') });
 
@@ -22,20 +23,30 @@ var routes = {
 		this.res.writeHead(200, { 'Content-Type': 'text/html' })
 
 		var grid = ["0"," "," "," "," "," "," "," "," "," "," "," ","1"," "," "," "," "," "," "," "," "," "," "," ","0"," "," "," "," "," "," "," "];
-		var gridRow = function (row){
-			var newGrid = [];
-			for(i = row*8; i < (row*8)+8; i++){
-				newGrid.push({"cell": grid[i]});
+		
+		function renderGrid(grid){
+			var gridRow = function (side, row){
+				var newGrid = [];
+				var offset = side == "left" ? 0 : 4;
+				for(i = row*8 + offset; i < (row*8)+(offset+4); i++){
+					newGrid.push({"cell": grid[i]});
+				}
+				return newGrid;
 			}
-			return newGrid;
-		}
-		var table = "<table style='table-layout:fixed;' border='1px'>";
-		for(j = 0; j < 4; j++){
-			table += "<tr>" + plates.bind("<td class='cell'></td>", gridRow(j)) + "</tr>";
-		}
-		table += "</table>"
 
-		this.res.end("<style>.cell{width:10px;padding:10px;height:25%;text-align:center;}</style>" + table);
+			var renderHalf = function (side){
+				var table = "<table border='1px'>";
+				for(var i = 0; i < 4; i++){
+					table += "<tr>" + plates.bind("<td class='cell'></td>", gridRow(side, i)) + "</tr>";
+				}
+				table += "</table>";
+				return table;
+			}
+			return {"grid_left": renderHalf("left"), "grid_right": renderHalf("right")};
+		}
+
+		var html = fs.readFileSync("index.html", "ASCII");
+		this.res.end(plates.bind(html, renderGrid(grid)));
 	}}
 };
 
